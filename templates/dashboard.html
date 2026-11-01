@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <div class="container">
+            <h2>Complaint Dashboard</h2>
+            <div class="nav-actions">
+                {% if session['role'] == 'student' %}
+                    <a href="{{ url_for('new_complaint') }}" class="btn primary">New Complaint</a>
+                {% endif %}
+                <a href="{{ url_for('logout') }}" class="btn danger">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container dashboard">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="welcome-box">
+            <h3>Welcome, {{ session['full_name'] }}</h3>
+            <p>Role: {{ session['role']|capitalize }}</p>
+        </div>
+
+        <section class="complaint-list">
+            <h3>Complaints</h3>
+            {% if complaints %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            {% if session['role'] == 'admin' %}
+                                <th>Student</th>
+                            {% endif %}
+                            <th>Status</th>
+                            <th>Submitted</th>
+                            {% if session['role'] == 'admin' %}
+                                <th>Action</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for complaint in complaints %}
+                            <tr>
+                                <td>#{{ complaint.id }}</td>
+                                <td>{{ complaint.title }}</td>
+                                <td>{{ complaint.category }}</td>
+                                {% if session['role'] == 'admin' %}
+                                    <td>{{ complaint.student_name }}</td>
+                                {% endif %}
+                                <td><span class="status {{ complaint.status|replace(' ', '-')|lower }}">{{ complaint.status }}</span></td>
+                                <td>{{ complaint.created_at }}</td>
+                                {% if session['role'] == 'admin' %}
+                                    <td>
+                                        <form method="POST" action="{{ url_for('update_status', complaint_id=complaint.id) }}">
+                                            <select name="status">
+                                                <option value="Open" {% if complaint.status == 'Open' %}selected{% endif %}>Open</option>
+                                                <option value="In Progress" {% if complaint.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                                <option value="Resolved" {% if complaint.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                                                <option value="Closed" {% if complaint.status == 'Closed' %}selected{% endif %}>Closed</option>
+                                            </select>
+                                            <button type="submit" class="btn small">Update</button>
+                                        </form>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td colspan="7" class="description-cell">
+                                    <strong>Description:</strong> {{ complaint.description }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No complaints found.</p>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

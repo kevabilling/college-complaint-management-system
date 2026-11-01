@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Complaint</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <div class="container">
+            <h2>Submit Complaint</h2>
+            <div class="nav-actions">
+                <a href="{{ url_for('dashboard') }}" class="btn secondary">Back to Dashboard</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container form-page">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" class="complaint-form">
+            <label for="title">Complaint Title</label>
+            <input type="text" id="title" name="title" placeholder="e.g. Hostel Wi-Fi issue" required>
+
+            <label for="category">Category</label>
+            <select id="category" name="category" required>
+                <option value="">Select category</option>
+                <option value="Infrastructure">Infrastructure</option>
+                <option value="IT Support">IT Support</option>
+                <option value="Academic">Academic</option>
+                <option value="Hostel">Hostel</option>
+                <option value="Transport">Transport</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="6" placeholder="Describe your issue clearly..." required></textarea>
+
+            <button type="submit" class="btn primary">Submit Complaint</button>
+        </form>
+    </main>
+</body>
+</html>
