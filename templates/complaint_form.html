@@ -6,12 +6,12 @@
     <title>New Complaint</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="page-body">
     <header class="topbar">
         <div class="container">
-            <h2>Submit Complaint</h2>
+            <h2>Submit a Complaint</h2>
             <div class="nav-actions">
-                <a href="{{ url_for('dashboard') }}" class="btn secondary">Back to Dashboard</a>
+                <a href="{{ url_for('dashboard') }}" class="btn secondary">Dashboard</a>
             </div>
         </div>
     </header>
@@ -25,26 +25,39 @@
             {% endif %}
         {% endwith %}
 
-        <form method="POST" class="complaint-form">
-            <label for="title">Complaint Title</label>
-            <input type="text" id="title" name="title" placeholder="e.g. Hostel Wi-Fi issue" required>
+        <div class="complaint-form-wrap">
+            <form method="POST" class="complaint-form">
+                <div class="form-header">
+                    <span class="eyebrow">Student Complaint</span>
+                    <h3>Tell us about the issue</h3>
+                </div>
 
-            <label for="category">Category</label>
-            <select id="category" name="category" required>
-                <option value="">Select category</option>
-                <option value="Infrastructure">Infrastructure</option>
-                <option value="IT Support">IT Support</option>
-                <option value="Academic">Academic</option>
-                <option value="Hostel">Hostel</option>
-                <option value="Transport">Transport</option>
-                <option value="Other">Other</option>
-            </select>
+                <div class="input-group">
+                    <label for="title">Complaint Title</label>
+                    <input type="text" id="title" name="title" placeholder="Example: Hostel Wi-Fi issue" required>
+                </div>
 
-            <label for="description">Description</label>
-            <textarea id="description" name="description" rows="6" placeholder="Describe your issue clearly..." required></textarea>
+                <div class="input-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select category</option>
+                        <option value="Infrastructure">Infrastructure</option>
+                        <option value="IT Support">IT Support</option>
+                        <option value="Academic">Academic</option>
+                        <option value="Hostel">Hostel</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
 
-            <button type="submit" class="btn primary">Submit Complaint</button>
-        </form>
+                <div class="input-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="6" placeholder="Describe your issue clearly and include any important details..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn primary submit-btn">Submit Complaint</button>
+            </form>
+        </div>
     </main>
 </body>
 </html>
