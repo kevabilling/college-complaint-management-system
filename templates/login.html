@@ -7,33 +7,50 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="auth-body">
-    <div class="auth-container">
-        <div class="auth-card">
+    <div class="auth-shell">
+        <div class="brand-panel">
+            <div class="brand-badge">CCMS</div>
             <h1>College Complaint Portal</h1>
-            <p class="subtitle">Student Support & Administration</p>
+            <p>Submit issues, monitor updates, and resolve student concerns in one easy workflow.</p>
+            <ul class="feature-list">
+                <li>Student-friendly complaint submissions</li>
+                <li>Live complaint status tracking</li>
+                <li>Admin response and status updates</li>
+            </ul>
+        </div>
 
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="flash {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+        <div class="form-panel">
+            <div class="auth-card">
+                <h2>Welcome Back</h2>
+                <p class="subtitle">Sign in to continue</p>
 
-            <form method="POST" action="{{ url_for('login') }}">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
 
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+                <form method="POST" action="{{ url_for('login') }}">
+                    <div class="input-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                    </div>
 
-                <button type="submit">Login</button>
-            </form>
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    </div>
 
-            <div class="demo-box">
-                <h3>Demo Accounts</h3>
-                <p><strong>Admin:</strong> admin / admin123</p>
-                <p><strong>Student:</strong> student1 / student123</p>
+                    <button type="submit" class="btn primary auth-btn">Login</button>
+                </form>
+
+                <div class="demo-box">
+                    <h3>Demo Accounts</h3>
+                    <p><strong>Admin:</strong> admin / admin123</p>
+                    <p><strong>Student:</strong> student1 / student123</p>
+                </div>
             </div>
         </div>
     </div>
