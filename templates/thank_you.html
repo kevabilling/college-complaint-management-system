@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="page-body">
+    <header class="topbar">
+        <div class="container">
+            <h2>Complaint Submitted</h2>
+            <div class="nav-actions">
+                <a href="{{ url_for('dashboard') }}" class="btn secondary">Dashboard</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container form-page">
+        <section class="thank-you-card">
+            <div class="success-icon">✓</div>
+            <h1>Thank You!</h1>
+            <p>Your complaint has been successfully submitted and sent to the college team for review.</p>
+
+            <div class="complaint-summary">
+                <div class="summary-row">
+                    <span>Complaint ID</span>
+                    <strong>#{{ complaint.id }}</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Current Status</span>
+                    <strong class="status {{ complaint.status|replace(' ', '-')|lower }}">{{ complaint.status }}</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Subject</span>
+                    <strong>{{ complaint.title }}</strong>
+                </div>
+            </div>
+
+            <div class="thank-you-actions">
+                <a href="{{ url_for('status_tracking', complaint_id=complaint.id) }}" class="btn primary">Track Complaint Status</a>
+                <a href="{{ url_for('dashboard') }}" class="btn secondary">Back to Dashboard</a>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

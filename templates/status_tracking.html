@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Status</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="page-body">
+    <header class="topbar">
+        <div class="container">
+            <h2>Complaint Status Tracking</h2>
+            <div class="nav-actions">
+                <a href="{{ url_for('dashboard') }}" class="btn secondary">Dashboard</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container form-page">
+        <section class="status-card">
+            <div class="status-card-header">
+                <div>
+                    <span class="eyebrow">Complaint ID</span>
+                    <h1>#{{ complaint.id }}</h1>
+                </div>
+                <span class="status {{ complaint.status|replace(' ', '-')|lower }}">{{ complaint.status }}</span>
+            </div>
+
+            <div class="status-grid">
+                <div class="status-box">
+                    <label>Title</label>
+                    <p>{{ complaint.title }}</p>
+                </div>
+                <div class="status-box">
+                    <label>Category</label>
+                    <p>{{ complaint.category }}</p>
+                </div>
+                <div class="status-box">
+                    <label>Submitted</label>
+                    <p>{{ complaint.created_at }}</p>
+                </div>
+                <div class="status-box">
+                    <label>Last Updated</label>
+                    <p>{{ complaint.updated_at }}</p>
+                </div>
+            </div>
+
+            <div class="description-block">
+                <label>Description</label>
+                <p>{{ complaint.description }}</p>
+            </div>
+
+            <div class="status-timeline">
+                <div class="timeline-step {% if complaint.status in ['Open','In Progress','Resolved','Closed'] %}active{% endif %}">
+                    <span>Submitted</span>
+                </div>
+                <div class="timeline-step {% if complaint.status in ['In Progress','Resolved','Closed'] %}active{% endif %}">
+                    <span>In Review</span>
+                </div>
+                <div class="timeline-step {% if complaint.status in ['Resolved','Closed'] %}active{% endif %}">
+                    <span>Resolved</span>
+                </div>
+                <div class="timeline-step {% if complaint.status == 'Closed' %}active{% endif %}">
+                    <span>Closed</span>
+                </div>
+            </div>
+
+            <a href="{{ url_for('dashboard') }}" class="btn primary">Back to Dashboard</a>
+        </section>
+    </main>
+</body>
+</html>
