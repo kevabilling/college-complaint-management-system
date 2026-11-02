@@ -1,14 +1,15 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 
 app = Flask(__name__)
-app.secret_key = 'college-complaint-system-secret-key'
+app.secret_key = os.environ.get('SECRET_KEY', 'college-complaint-system-secret-key')
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'your_password'
-app.config['MYSQL_DB'] = 'college_complaints'
+app.config['MYSQL_HOST'] = os.environ.get('MYSQL_HOST', 'localhost')
+app.config['MYSQL_USER'] = os.environ.get('MYSQL_USER', 'root')
+app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQL_PASSWORD', 'your_password')
+app.config['MYSQL_DB'] = os.environ.get('MYSQL_DB', 'college_complaints')
 
 mysql = MySQL(app)
 
@@ -129,12 +130,50 @@ def new_complaint():
             "INSERT INTO complaints (student_id, title, category, description, status) VALUES (%s, %s, %s, %s, %s)",
             (session['user_id'], title, category, description, 'Open')
         )
+        complaint_id = cur.lastrowid
         mysql.connection.commit()
         cur.close()
-        flash('Complaint submitted successfully.', 'success')
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('complaint_success', complaint_id=complaint_id))
 
     return render_template('complaint_form.html')
+
+
+@app.route('/thank-you/<int:complaint_id>')
+def complaint_success(complaint_id):
+    if 'user_id' not in session:
+        return redirect(url_for('index'))
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("SELECT * FROM complaints WHERE id = %s AND student_id = %s", (complaint_id, session['user_id']))
+    complaint = cur.fetchone()
+    cur.close()
+
+    if complaint is None:
+        flash('Complaint not found.', 'error')
+        return redirect(url_for('dashboard'))
+
+    return render_template('thank_you.html', complaint=complaint)
+
+
+@app.route('/status-tracking/<int:complaint_id>')
+def status_tracking(complaint_id):
+    if 'user_id' not in session:
+        return redirect(url_for('index'))
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("SELECT * FROM complaints WHERE id = %s", (complaint_id,))
+    complaint = cur.fetchone()
+    cur.close()
+
+    if complaint is None:
+        flash('Complaint not found.', 'error')
+        return redirect(url_for('dashboard'))
+
+    if session['role'] == 'student' and complaint['student_id'] != session['user_id']:
+        flash('You are not allowed to view this complaint.', 'error')
+        return redirect(url_for('dashboard'))
+
+    return render_template('status_tracking.html', complaint=complaint)
 
 
 @app.route('/update-status/<int:complaint_id>', methods=['POST'])
@@ -160,4 +199,4 @@ if __name__ == '__main__':
             init_db()
         except Exception:
             pass
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
