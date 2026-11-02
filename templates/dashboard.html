@@ -34,7 +34,9 @@
         </div>
 
         <section class="complaint-list">
-            <h3>Complaints</h3>
+            <div class="section-header">
+                <h3>Complaints</h3>
+            </div>
             {% if complaints %}
                 <table>
                     <thead>
@@ -47,6 +49,7 @@
                             {% endif %}
                             <th>Status</th>
                             <th>Submitted</th>
+                            <th>Tracking</th>
                             {% if session['role'] == 'admin' %}
                                 <th>Action</th>
                             {% endif %}
@@ -63,6 +66,9 @@
                                 {% endif %}
                                 <td><span class="status {{ complaint.status|replace(' ', '-')|lower }}">{{ complaint.status }}</span></td>
                                 <td>{{ complaint.created_at }}</td>
+                                <td>
+                                    <a href="{{ url_for('status_tracking', complaint_id=complaint.id) }}" class="btn small secondary">Track</a>
+                                </td>
                                 {% if session['role'] == 'admin' %}
                                     <td>
                                         <form method="POST" action="{{ url_for('update_status', complaint_id=complaint.id) }}">
@@ -78,7 +84,7 @@
                                 {% endif %}
                             </tr>
                             <tr>
-                                <td colspan="7" class="description-cell">
+                                <td colspan="8" class="description-cell">
                                     <strong>Description:</strong> {{ complaint.description }}
                                 </td>
                             </tr>
@@ -86,7 +92,7 @@
                     </tbody>
                 </table>
             {% else %}
-                <p>No complaints found.</p>
+                <p class="empty-state">No complaints found.</p>
             {% endif %}
         </section>
     </main>
